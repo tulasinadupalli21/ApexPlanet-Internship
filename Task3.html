@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive Fun Zone</title>
+ <style>
+  body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #aaeecc;
+  color: #333;
+}
+
+header {
+  background: #aa4455;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+main {
+  padding: 1rem;
+}
+
+section {
+  background: white;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.carousel img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: none;
+  background: #ffcccc;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #3700b3;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  .carousel {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+  button {
+    padding: 8px 16px;
+  }
+}
+
+ </style>
+</head>
+<body>
+  <header>
+    <h1>🎉 Fun Zone</h1>
+  </header>
+
+  <main>
+    <!-- Image Carousel -->
+    <section class="carousel-section">
+      <h2>🖼 Image Carousel</h2>
+      <div class="carousel">
+        <button onclick="prevImage()">⬅</button>
+        <img id="carousel-img" src="https://picsum.photos/id/1015/400/200" alt="carousel image" />
+        <button onclick="nextImage()">➡</button>
+      </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section class="quiz-section">
+      <h2>🧠 Quick Quiz</h2>
+      <div id="quiz-container">
+        <p id="question"></p>
+        <div id="answers"></div>
+        <button id="next-btn" onclick="nextQuestion()">Next</button>
+      </div>
+    </section>
+
+    <!-- Joke Generator -->
+    <section class="joke-section">
+      <h2>😂 Random Joke</h2>
+      <p id="joke">Click the button to get a joke!</p>
+      <button onclick="getJoke()">Tell me a joke</button>
+    </section>
+  </main>
+
+  <script>
+    // Carousel Logic
+const images = [
+  "https://picsum.photos/id/1015/400/200",
+  "https://picsum.photos/id/1025/400/200",
+  "https://picsum.photos/id/1035/400/200"
+];
+let current = 0;
+
+function showImage() {
+  document.getElementById("carousel-img").src = images[current];
+}
+
+function nextImage() {
+  current = (current + 1) % images.length;
+  showImage();
+}
+
+function prevImage() {
+  current = (current - 1 + images.length) % images.length;
+  showImage();
+}
+
+// Quiz Logic
+const quizData = [
+  {
+    question: "Which of the following colors contain equal amounts of RBG?",
+    answers: ["White", "Gray", "Black", "All of the above"],
+    correct: 3
+  },
+  {
+    question: "What does CSS stand for?",
+    answers: ["Computer Style Sheets", "Cascading Style Sheets", "Creative Style System", "Colorful Style Sheets"],
+    correct: 1
+  },
+  {
+    question: "Which HTML tag is used for JavaScript?",
+    answers: ["<script>", "<js>", "<code>", "<javascript>"],
+    correct: 0
+  }
+];
+
+let quizIndex = 0;
+
+function loadQuestion() {
+  const q = quizData[quizIndex];
+  document.getElementById("question").textContent = q.question;
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+  q.answers.forEach((ans, idx) => {
+    const btn = document.createElement("button");
+    btn.textContent = ans;
+    btn.onclick = () => checkAnswer(idx);
+    answersDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(index) {
+  const correct = quizData[quizIndex].correct;
+  const buttons = document.querySelectorAll("#answers button");
+  buttons.forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === correct) btn.style.background = "green";
+    if (idx === index && idx !== correct) btn.style.background = "red";
+  });
+}
+
+function nextQuestion() {
+  quizIndex++;
+  if (quizIndex >= quizData.length) {
+    document.getElementById("quiz-container").innerHTML = "<h3>Quiz Finished!</h3>";
+  } else {
+    loadQuestion();
+  }
+}
+
+window.onload = () => {
+  loadQuestion();
+  showImage();
+};
+
+// Joke API
+function getJoke() {
+  fetch("https://v2.jokeapi.dev/joke/Any?type=single")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("joke").textContent = data.joke;
+    })
+    .catch(() => {
+      document.getElementById("joke").textContent = "Oops! Couldn't fetch a joke.";
+    });
+}
+
+  </script>
+</body>
+</html>
