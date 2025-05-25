@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio + To-Do + Product Filter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: italian, sans-serif;
+      background: #eeccfa;
+      color: #333;
+    }
+    header {
+      background: #1abcbb;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .section {
+      display: none;
+      padding: 20px;
+    }
+    .active {
+      display: block;
+    }
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 1000px;
+    }
+
+    /* Shared form and button styles */
+    input, select, textarea, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100%;
+      max-width: 100%;
+    }
+    button {
+      background: #00796b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #004d40;
+    }
+
+    /* Specific sections */
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 8px 0;
+      padding: 8px;
+      background: #e0f2f1;
+      display: flex;
+      justify-content: space-between;
+      border-radius: 5px;
+    }
+    .product {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .product-card {
+      background: #f1f8e9;
+      padding: 10px;
+      border: 1px solid #c8e6c9;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    footer {
+      text-align: center;
+      background: #1abcbb;
+      color: white;
+      padding: 15px;
+    }
+
+    @media (max-width: 600px) {
+      nav a {
+        display: block;
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>My Portfolio</h2>
+  <nav>
+    <a href="#" onclick="showSection('about')">About</a>
+    <a href="#" onclick="showSection('projects')">Projects</a>
+    <a href="#" onclick="showSection('contact')">Contact</a>
+    <a href="#" onclick="showSection('todo')">To-Do</a>
+    <a href="#" onclick="showSection('products')">Products</a>
+  </nav>
+</header>
+
+<!-- ABOUT SECTION -->
+<section id="about" class="section active">
+  <div class="container">
+    <h2>About Me</h2>
+    <p>Hello! I'm a passionate developer interested in web development, UI/UX design, and solving real-world problems using code. I love building responsive, interactive applications using HTML, CSS, and JavaScript.</p>
+  </div>
+</section>
+
+<!-- PROJECTS SECTION -->
+<section id="projects" class="section">
+  <div class="container">
+    <h2>Projects</h2>
+    <ul>
+      <li><strong>To-Do List App:</strong> Task tracker with due dates & local storage.</li>
+      <li><strong>Product Filter:</strong> Search, filter & sort products dynamically.</li>
+      <li><strong>Portfolio Website:</strong> Multi-page responsive site showcasing skills.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section id="contact" class="section">
+  <div class="container">
+    <h2>Contact Me</h2>
+    <form onsubmit="alert('Message sent!'); return false;">
+      <input type="text" placeholder="Your Name" required />
+      <input type="email" placeholder="Your Email" required />
+      <textarea rows="5" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- TO-DO LIST -->
+<section id="todo" class="section">
+  <div class="container">
+    <h2>To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Enter task..." />
+    <input type="date" id="dueDate" />
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+</section>
+
+<!-- PRODUCT FILTER -->
+<section id="products" class="section">
+  <div class="container">
+    <h2>Product Filter</h2>
+    <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterProducts()" />
+    <select id="categoryFilter" onchange="filterProducts()">
+      <option value="all">All</option>
+      <option value="electronics">Electronics</option>
+      <option value="fashion">Fashion</option>
+    </select>
+    <select id="ratingSort" onchange="filterProducts()">
+      <option value="desc">High to Low</option>
+      <option value="asc">Low to High</option>
+    </select>
+    <div class="product" id="productList"></div>
+  </div>
+</section>
+
+<footer>
+<p>©️ 2025 My Portfolio. All rights reserved.</p>
+</footer>
+
+<script>
+  // Section switching
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // ---------- TO-DO LIST ----------
+  let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+  function renderTasks() {
+    const list = document.getElementById('taskList');
+    list.innerHTML = '';
+    tasks.forEach((task, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${task.text} <small>(Due: ${task.due || 'No date'})</small></span>
+        <button onclick="removeTask(${index})">❌</button>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  function addTask() {
+    const text = document.getElementById('taskInput').value.trim();
+    const due = document.getElementById('dueDate').value;
+    if (text) {
+      tasks.push({ text, due });
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      document.getElementById('taskInput').value = '';
+      document.getElementById('dueDate').value = '';
+      renderTasks();
+    }
+  }
+
+  function removeTask(index) {
+    tasks.splice(index, 1);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    renderTasks();
+  }
+
+  renderTasks();
+
+  // ---------- PRODUCT FILTER ----------
+  const products = [
+    { name: "Phone", category: "electronics", rating: 4.5 },
+    { name: "Laptop", category: "electronics", rating: 4.8 },
+    { name: "Shoes", category: "fashion", rating: 4.0 },
+    { name: "T-shirt", category: "fashion", rating: 3.8 },
+    { name: "Headphones", category: "electronics", rating: 4.2 }
+];
+
+  function filterProducts() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('categoryFilter').value;
+    const sort = document.getElementById('ratingSort').value;
+
+    let filtered = products.filter(p =>
+      (category === 'all' || p.category === category) &&
+      p.name.toLowerCase().includes(search)
+    );
+
+    filtered.sort((a, b) =>
+      sort === 'asc' ? a.rating - b.rating : b.rating - a.rating
+    );
+
+    const container = document.getElementById('productList');
+    container.innerHTML = '';
+    filtered.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <h4>${p.name}</h4>
+        <p>Category: ${p.category}</p>
+        <p>Rating: ${p.rating}</p>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  filterProducts();
+</script>
+
+</body>
+</html>
