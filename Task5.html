@@ -1,0 +1,656 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dynamic Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #aabbdd;
+            padding: 1rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        header nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        header nav ul li {
+            margin-left: 1rem;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #bbbbdd;
+        }
+
+        main {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        section {
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        section h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #CCBBAA;
+        }
+
+        #latest-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .post-card {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #43EEDD;
+        }
+
+        .post-card p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        #all-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        #post-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        #comments-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+
+        #comments-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4CAF50;
+        }
+
+        #comments-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #comments-list li {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+            color: #555;
+        }
+
+        #comment-form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1rem;
+        }
+
+        #comment-text {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            resize: none;
+        }
+
+        #comment-form button {
+            padding: 0.8rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            width: fit-content;
+        }
+
+        #comment-form button:hover {
+            background-color: #45a049;
+        }
+
+        #new-post-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #new-post-form label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4CAA10;
+        }
+
+        #new-post-form input,
+        #new-post-form textarea {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            resize: none;
+        }
+
+        #new-post-form textarea {
+            height: 150px;
+        }
+
+        #new-post-form button {
+            padding: 0.8rem 1.5rem;
+            background-color: #AABB50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            width: fit-content;
+        }
+
+        #new-post-form button:hover {
+            background-color: #45aa49;
+        }
+
+        #login-form,
+        #register-form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #login-form label,
+        #register-form label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        #login-form input,
+        #register-form input {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        #login-form button,
+        #register-form button {
+            padding: 0.8rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            width: fit-content;
+        }
+
+        #login-form button:hover,
+        #register-form button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: white;
+            margin-top: 2rem;
+            border-top: 1px solid #444;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            header nav ul li {
+                margin: 0.5rem 0;
+            }
+
+            #all-posts, #latest-posts {
+                grid-template-columns: 1fr;
+            }
+            #comment-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            #comment-form button{
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Nature's Therapy</div>
+        <nav>
+            <ul>
+                <li><a href="#" data-section="home">Home</a></li>
+                <li><a href="#" data-section="posts">Posts</a></li>
+                <li><a href="#" data-section="new-post">New Post</a></li>
+                <li><a href="#" data-section="login">Login</a></li>
+                <li><a href="#" data-section="register">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home">
+            <h1>Welcome to Nature's Therapy</h1>
+            <p>Read our latest blog posts:</p>
+            <div id="latest-posts">
+            </div>
+        </section>
+
+        <section id="posts" style="display: none;">
+            <h1>All Posts</h1>
+            <div id="all-posts">
+            </div>
+        </section>
+
+        <section id="post" style="display: none;">
+            <h1 id="post-title"></h1>
+            <p id="post-content"></p>
+            <div id="comments-section">
+                <h2>Comments</h2>
+                <ul id="comments-list">
+                </ul>
+                <h3>Add a Comment</h3>
+                <form id="comment-form">
+                    <textarea id="comment-text" placeholder="Your comment"></textarea>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="new-post" style="display: none;">
+            <h1>New Blog Post</h1>
+            <form id="new-post-form">
+                <label for="new-post-title">Title:</label>
+                <input type="text" id="new-post-title" required>
+                <label for="new-post-content">Content:</label>
+                <textarea id="new-post-content" required></textarea>
+                <label for="new-post-category">Category:</label>
+                <input type="text" id="new-post-category" required>
+                <button type="submit">Publish</button>
+            </form>
+        </section>
+
+        <section id="login" style="display: none;">
+            <h1>Login</h1>
+            <form id="login-form">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" required>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p id="login-error" class="error"></p>
+        </section>
+
+        <section id="register" style="display: none;">
+            <h1>Register</h1>
+            <form id="register-form">
+                <label for="register-name">Name:</label>
+                <input type="text" id="register-name" required>
+                <label for="register-email">Email:</label>
+                <input type="email" id="register-email" required>
+                <label for="register-password">Password:</label>
+                <input type="password" id="register-password" required>
+                <button type="submit">Register</button>
+            </form>
+            <p id="register-error" class="error"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 My Blog. All rights reserved.</p>
+    </footer>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const homeSection = document.getElementById('home');
+    const postsSection = document.getElementById('posts');
+    const postSection = document.getElementById('post');
+    const newPostSection = document.getElementById('new-post');
+    const loginSection = document.getElementById('login');
+    const registerSection = document.getElementById('register');
+    const navLinks = document.querySelectorAll('header nav ul li a');
+    const newPostForm = document.getElementById('new-post-form');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const commentForm = document.getElementById('comment-form');
+
+
+    let posts = [
+        {
+            id: '1',
+            title: 'The Green Antidote: Battling Anxiety and Depression with a Dose of the Outdoors',
+            content: `Feeling stressed or down? **Nature helps.**
+
+Science shows that spending time outdoors can:
+* **Calm stress:** It lowers stress hormones.
+* **Lift your mood:** It boosts happy chemicals.
+* **Clear your head:** It breaks negative thought cycles.
+
+You don't need a big adventure to benefit. Try these simple "doses":
+* Take a **mindful walk**: Just 15 minutes, noticing sights and sounds.
+* **Connect with plants**: Even a small potted plant helps.
+* **Sit and observe**: Just breathe and be present outdoors.
+
+Nature is a powerful, free tool for your well-being. Give it a try!`,
+            category: 'Mental Health',
+            comments: [
+                { text: 'This is so true! A walk in the park always helps clear my head after a tough day.', user: 'NatureLover22' },
+                { text: 'Love this! I\'ve started having my morning coffee on the porch just listening to the birds, and it makes a huge difference.', user: 'MindfulMama' },
+                { text: 'Totally agree! Nothing beats a long hike to shake off the blues. Thanks for sharing this reminder!', user: 'TrailBlazerTim' }
+            ]
+        },
+        {
+            id: '2',
+            title: 'Sleep Deeper, Live Better: How Connecting with Nature Can Improve Your Zzz\'s',
+            content: `Struggling to get good sleep? Nature might be the answer.
+
+Exposure to natural light helps regulate your body's internal clock, also known as your **circadian rhythm**. This is crucial for healthy sleep patterns. When you spend time outdoors, especially in the morning, you signal to your body when it's time to be awake and when to wind down.
+
+The calming sounds of nature – gentle rain, rustling leaves, distant birdsong – can also help quiet a busy mind before bed. Even having plants in your bedroom can create a more serene atmosphere conducive to sleep.
+
+**Try these simple steps for better sleep:**
+* **Morning walk:** Get some natural light exposure soon after waking.
+* **Limit artificial light:** Reduce screen time in the evenings.
+* **Open your window:** Let in fresh air and natural sounds if possible.
+* **Bring greens inside:** A few houseplants can create a calming environment.
+
+A deeper connection with nature can lead to deeper, more restorative sleep, and ultimately, a better quality of life.`,
+            category: 'Well-being',
+            comments: [
+                { text: 'I never thought about how natural light affects sleep. Great insight!', user: 'EarlyRiser' }
+            ]
+        },
+        {
+            id: '3',
+            title: 'Forest Bathing 101: How Shinrin-Yoku Can Melt Away Stress (No Water Required!)',
+            content: `Have you ever heard of **Shinrin-Yoku**? Often called "forest bathing," it's not about actual bathing, but about immersing yourself in the atmosphere of the forest. It's a therapeutic practice that originated in Japan and is gaining global recognition for its profound stress-reducing benefits.
+
+**What is Shinrin-Yoku?**
+It's simply spending time in a forest environment, consciously connecting with nature through your senses. It's about slowing down, unplugging from technology, and letting the forest embrace you.
+
+**How does it help?**
+* **Reduced stress hormones:** Studies show it lowers cortisol and adrenaline.
+* **Improved mood:** It can decrease feelings of depression and anxiety.
+* **Boosted immune system:** Exposure to phytoncides (natural compounds released by trees) can enhance natural killer (NK) cell activity.
+* **Increased focus and creativity:** Being in nature can calm the mind and spark new ideas.
+
+**Ready to try it?**
+Find a quiet natural spot. Leave your phone behind. Walk slowly, breathe deeply. Touch the leaves, feel the bark. Listen to the wind and the birds. Just *be* present. It's a powerful way to find calm and reset your mind.`,
+            category: 'Mindfulness',
+            comments: [
+                { text: 'I tried this last weekend! It felt amazing. So peaceful.', user: 'ZenSeeker' },
+                { text: 'Didn\'t know there was a name for it! I just call it "my happy place."', user: 'TreeHugger' }
+            ]
+        }
+    ];
+
+    let users = [];
+    let currentUser = null;
+
+    function showSection(sectionId) {
+        homeSection.style.display = 'none';
+        postsSection.style.display = 'none';
+        postSection.style.display = 'none';
+        newPostSection.style.display = 'none';
+        loginSection.style.display = 'none';
+        registerSection.style.display = 'none';
+
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = 'block';
+        }
+    }
+
+    function createPostCard(post) {
+        const postCard = document.createElement('div');
+        postCard.className = 'post-card';
+        postCard.innerHTML = `
+            <h2>${post.title}</h2>
+            <p>${post.content.substring(0, 100)}...</p>
+            <button data-post-id="${post.id}">Read More</button>
+        `;
+        return postCard;
+    }
+
+    function displayLatestPosts() {
+        const latestPostsContainer = document.getElementById('latest-posts');
+        // Display up to 3 latest posts
+        const latestPosts = posts.slice().sort((a, b) => b.id - a.id).slice(0, 3);
+        latestPostsContainer.innerHTML = '';
+        latestPosts.forEach(post => {
+            const postCard = createPostCard(post);
+            latestPostsContainer.appendChild(postCard);
+        });
+    }
+
+    function displayAllPosts() {
+        const allPostsContainer = document.getElementById('all-posts');
+        allPostsContainer.innerHTML = '';
+        // Sort posts by ID in descending order to show newer posts first
+        const sortedPosts = posts.slice().sort((a, b) => b.id - a.id);
+        sortedPosts.forEach(post => {
+            const postCard = createPostCard(post);
+            allPostsContainer.appendChild(postCard);
+        });
+    }
+
+    function displayPost(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+            const postTitleElement = document.getElementById('post-title');
+            const postContentElement = document.getElementById('post-content');
+            postTitleElement.textContent = post.title;
+            // Use innerHTML to render markdown-like content (like bolding and lists)
+            postContentElement.innerHTML = post.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<li>$1</li>');
+
+            const commentsList = document.getElementById('comments-list');
+            commentsList.innerHTML = '';
+            post.comments.forEach(comment => {
+                const commentItem = document.createElement('li');
+                commentItem.textContent = `${comment.user}: ${comment.text}`;
+                commentsList.appendChild(commentItem);
+            });
+            showSection('post');
+        }
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const targetSection = event.target.dataset.section;
+            showSection(targetSection);
+            if (targetSection === 'posts') {
+                displayAllPosts();
+            }
+        });
+    });
+
+    document.addEventListener('click', (event) => {
+        if (event.target.tagName === 'BUTTON' && event.target.dataset.postId) {
+            const postId = event.target.dataset.postId;
+            displayPost(postId);
+        }
+    });
+
+    if (newPostForm) {
+        newPostForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const title = document.getElementById('new-post-title').value;
+            const content = document.getElementById('new-post-content').value;
+            const category = document.getElementById('new-post-category').value;
+            if (title && content && category) {
+                const newPost = {
+                    id: String(posts.length + 1), // Simple ID generation
+                    title,
+                    content,
+                    category,
+                    comments: []
+                };
+                posts.push(newPost);
+                alert('Post published successfully!');
+                newPostForm.reset();
+                showSection('home');
+                displayLatestPosts();
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorElement = document.getElementById('login-error');
+
+            const user = users.find(u => u.email === email && u.password === password);
+            if (user) {
+                currentUser = user;
+                alert('Logged in successfully!');
+                showSection('home');
+                displayLatestPosts();
+            } else {
+                errorElement.textContent = 'Invalid credentials. Please try again.';
+            }
+        });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const errorElement = document.getElementById('register-error');
+
+            if (name && email && password) {
+                if (users.find(u => u.email === email)) {
+                    errorElement.textContent = 'Email already exists. Please use a different email.';
+                    return;
+                }
+                const newUser = { name, email, password };
+                users.push(newUser);
+                alert('Registered successfully! Please log in.');
+                showSection('login');
+            } else {
+                errorElement.textContent = 'Please fill in all fields.';
+            }
+        });
+    }
+
+    if(commentForm){
+        commentForm.addEventListener('submit', (event)=>{
+            event.preventDefault();
+            const commentText = document.getElementById('comment-text').value;
+            const postTitle = document.getElementById('post-title').textContent; // Get the title of the currently displayed post
+            const post = posts.find(p => p.title === postTitle);
+
+            if(commentText && post){
+                post.comments.push({text: commentText, user: currentUser ? currentUser.name: 'Anonymous'});
+                alert('Comment added!');
+                commentForm.reset();
+                displayPost(post.id); // Re-display the post to show new comment
+            } else if (!post) {
+                alert('Error: Could not find the current post.');
+            } else {
+                alert('Please enter a comment.');
+            }
+        });
+    }
+
+    // Initial display
+    showSection('home');
+    displayLatestPosts();
+});
+    </script>
+</body>
+</html>
